@@ -1,0 +1,15 @@
+export const failedSprites = {
+	'nidoran-m': 'nidoranm',
+	'mr-mime': 'mrmime',
+	'ho-oh': 'hooh',
+	'mime-jr': 'mimejr',
+	'tapu-fini': 'tapufini',
+	'tapu-bulu': 'tapubulu',
+	'tapu-koko': 'tapukoko',
+	'tapu-lele': 'tapulele',
+	'hakamo-o': 'hakamoo',
+	'kommo-o': 'kommoo',
+	'jangmo-o': 'jangmoo',
+	'type-null': 'typenull',
+	'mr-rime': 'mrrime',
+};

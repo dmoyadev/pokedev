@@ -54,7 +54,9 @@ export async function getFromDB(id: string | number, objectStore: PokedevTables)
 		const store = transaction.objectStore(objectStore);
 		const request = store.get(id);
 
-		request.onsuccess = () => resolve(request.result?.data);
+		request.onsuccess = () => {
+			resolve(request.result?.data);
+		};
 	});
 }
 

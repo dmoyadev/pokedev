@@ -8,17 +8,17 @@ export interface API_RESPONSE {
 	results: any[];
 }
 
-export async function useData(endpoint: string, offset = 0, limit = 50){
+export async function useData(endpoint: string){
 	const isLoading = ref(true);
 	const error = ref();
 	const data = ref();
 
-	const URL = `${import.meta.env.VITE_API_URL + endpoint}?offset=${offset}&limit=${limit}`;
+	const URL = `${import.meta.env.VITE_API_URL + endpoint}`;
 	data.value = await getFromDB(URL, PokedevTables.API_CALLS);
 	if(!data.value) {
 		const response: API_RESPONSE = await fetch(URL).then(res => res.json());
-		data.value = response.results;
-		await saveToDB({ url: URL, data: response.results }, PokedevTables.API_CALLS);
+		data.value = response;
+		await saveToDB({ url: URL, data: response }, PokedevTables.API_CALLS);
 	}
 	isLoading.value = false;
 
