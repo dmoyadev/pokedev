@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# Abort on errors
+set -e
+
 # Get the commit deployment message
 default="🚀 Deploy $(date +'%Y%m%d%H%M%S')";
 read -p "Enter the deployment commit message [$default]:" message
@@ -8,13 +11,17 @@ if [ -z "$message" ]; then
 	message="$default"
 fi
 
-# Abort on errors
-set -e
-
 # build
 npm run build
 
-# Adding the deployment folder
-git add -f dist
+# navigate into the build output directory
+cd dist
+
+git init
+git add -A
 git commit -m "$message"
-git subtree push --prefix dist origin gh-pages
+
+# if you are deploying to https://<USERNAME>.github.io
+git push -f git@github.com:dmoyadev/pokedev.git main:gh-pages
+
+cd -
