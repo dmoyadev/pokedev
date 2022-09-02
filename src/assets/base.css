@@ -1,11 +1,50 @@
 :root {
 	--color-background: #efefef;
+	--color-background-card: #c1c1c5;
 	--color-text: #2d3038;
+
+	--color-type-bug: #92BC2C;
+	--color-type-bug-diff: #92BC2Ccc;
+	--color-type-dark: #595761;
+	--color-type-dark-diff: #595761cc;
+	--color-type-dragon: #0C69C8;
+	--color-type-dragon-diff: #0C69C8cc;
+	--color-type-electric: #F2D94E;
+	--color-type-electric-diff: #F2D94Ecc;
+	--color-type-fire: #FBA54C;
+	--color-type-fire-diff: #FBA54Ccc;
+	--color-type-fairy: #EE90E6;
+	--color-type-fairy-diff: #EE90E6cc;
+	--color-type-fighting: #D3425F;
+	--color-type-fighting-diff: #D3425Fcc;
+	--color-type-flying: #A1BBEC;
+	--color-type-flying-diff: #A1BBECcc;
+	--color-type-ghost: #5F6DBC;
+	--color-type-ghost-diff: #5F6DBCcc;
+	--color-type-grass: #5FBD58;
+	--color-type-grass-diff: #5FBD58cc;
+	--color-type-ground: #DA7C4D;
+	--color-type-ground-diff: #DA7C4Dcc;
+	--color-type-ice: #75D0C1;
+	--color-type-ice-diff: #75D0C1cc;
+	--color-type-normal: #A0A29F;
+	--color-type-normal-diff: #A0A29Fcc;
+	--color-type-poison: #B763CF;
+	--color-type-poison-diff: #B763CFcc;
+	--color-type-psychic: #FA8581;
+	--color-type-psychic-diff: #FA8581cc;
+	--color-type-rock: #C9BB8A;
+	--color-type-rock-diff: #C9BB8Acc;
+	--color-type-steel: #5695A3;
+	--color-type-steel-diff: #5695A3cc;
+	--color-type-water: #539DDF;
+	--color-type-water-diff: #539DDFcc;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
 		--color-background: #2d3038;
+		--color-background-card: #4a4a54;
 		--color-text: #efefef;
 	}
 }
@@ -18,3 +57,22 @@
 	position: relative;
 	font-weight: normal;
 }
+
+.type-bug { background: var(--color-type-bug); }
+.type-dark { background: var(--color-type-dark); }
+.type-dragon { background: var(--color-type-dragon); }
+.type-electric { background: var(--color-type-electric); }
+.type-fire { background: var(--color-type-fire); }
+.type-fairy { background: var(--color-type-fairy); }
+.type-fighting { background: var(--color-type-fighting); }
+.type-flying { background: var(--color-type-flying); }
+.type-ghost { background: var(--color-type-ghost); }
+.type-grass { background: var(--color-type-grass); }
+.type-ground { background: var(--color-type-ground); }
+.type-ice { background: var(--color-type-ice); }
+.type-normal { background: var(--color-type-normal); }
+.type-poison { background: var(--color-type-poison); }
+.type-psychic { background: var(--color-type-psychic); }
+.type-rock { background: var(--color-type-rock); }
+.type-steel { background: var(--color-type-steel); }
+.type-water { background: var(--color-type-water); }
