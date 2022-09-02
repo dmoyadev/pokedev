@@ -10,8 +10,8 @@ export function useFailedImg() {
 	 * @param {Event} e
 	 * @param {PokemonSpecies} pokemon
 	 */
-	function replaceWithDefaultSprite(e: Event, pokemon: Pokemon) {
-		if(!e?.target) {
+	function replaceWithDefaultSprite(e: Event, pokemon?: Pokemon) {
+		if(!e?.target || !pokemon) {
 			return;
 		}
 

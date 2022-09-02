@@ -15,7 +15,7 @@ const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUppe
 
 <template>
 	<section
-		v-if="pokemon?.id"
+		v-if="pokemon && pokemon?.id"
 		class="card"
 		:class="'type-' + pokemon?.types[0].type.name"
 		:data-number="'#' + String(pokemon?.id).padStart(3, '0')"
@@ -34,8 +34,8 @@ const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUppe
 		</h2>
 		<div class="pokemon-types">
 			<IconType
-				v-for="type in pokemon.types"
-				:key="type"
+				v-for="(type, index) in pokemon.types"
+				:key="index"
 				:pokemon-type="type.type.name"
 				class="pokemon-type"
 			/>
