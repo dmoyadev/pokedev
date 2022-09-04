@@ -15,9 +15,15 @@ const getLastNumbers = (length: number): number[] => [...Array.from(Array(props.
 
 const shownPages = computed<number[]>(() => {
 	const pages: number[] = [];
+	
+	// Manage small amount of pages
+	if(props.totalPages <= 9) {
+		return getFirstNumbers(props.totalPages);
+	}
+	
 	// Add mandatory first two pages
 	for(const oneOfFirstPages of [1, 2]) {
-		if(props.totalPages > oneOfFirstPages) {
+		if(props.totalPages >= oneOfFirstPages) {
 			pages.push(oneOfFirstPages);
 		}
 	}

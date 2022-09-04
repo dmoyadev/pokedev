@@ -22,7 +22,7 @@ export function useFailedImg() {
 			return;
 		}
 
-		const defaultSprite = `https://play.pokemonshowdown.com/sprites/gen5/${pokemon?.species.name}.png`;
+		const defaultSprite = `https://play.pokemonshowdown.com/sprites/gen5/${pokemon?.species?.name}.png`;
 		if(!triedImages.value.includes(defaultSprite)) {
 			(e.target as HTMLImageElement).src = defaultSprite;
 			triedImages.value.push(defaultSprite);
