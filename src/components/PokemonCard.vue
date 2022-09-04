@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onUpdated } from "vue";
 import { Pokemon } from "@/models/Pokemon";
 import { useFailedImg } from "@/composables/failedImg";
 import IconType from "@/components/icons/IconType.vue";
@@ -8,14 +9,16 @@ defineProps<{
 	isLoading?: boolean,
 }>();
 
-const { replaceWithDefaultSprite } = useFailedImg();
+const { replaceWithDefaultSprite, clearTriesList } = useFailedImg();
+onUpdated(() => clearTriesList());
 
 const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUpperCase());
 </script>
 
 <template>
-	<section
+	<RouterLink
 		v-if="pokemon && pokemon?.id"
+		:to="pokemon.name"
 		class="card"
 		:class="'type-' + pokemon?.types[0].type.name"
 		:data-number="'#' + String(pokemon?.id).padStart(3, '0')"
@@ -51,7 +54,7 @@ const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUppe
 				<span>{{ (pokemon.weight/10).toFixed(1) }}kg</span>
 			</div>
 		</div>
-	</section>
+	</RouterLink>
 	<section
 		v-else
 		class="card type-normal"
@@ -80,6 +83,7 @@ const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUppe
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	color: currentColor;
 	
 	&:before{
 		content: '';

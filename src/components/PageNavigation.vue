@@ -161,6 +161,7 @@ a {
 .disabled {
 	cursor: not-allowed;
 	color: var(--color-text-light);
+	pointer-events: none;
 }
 
 ul {
