@@ -4,10 +4,11 @@ import { Pokemon } from "@/models/Pokemon";
 import { useFetchData } from "@/composables/fetchData";
 import { useFetchPokemon } from "@/composables/fetchPokemon";
 import PokemonCard from "@/components/PokemonCard.vue";
-import { NamedAPIResourceList } from "@/models/Common";
+import { APIResourceWithId, NamedAPIResourceList } from "@/models/Common";
 import { useRoute, useRouter } from "vue-router";
 import { debounce } from "@/utils/debounce";
 import Navigation from "@/components/PageNavigation.vue";
+import PokemonSearch from "@/components/PokemonSearch.vue";
 
 // Pagination
 const route = useRoute();
@@ -20,13 +21,13 @@ const totalPages = computed(() => {
 	if(searchQuery.value) {
 		return Math.ceil(pokemonNamesSearched.value.length / limit.value);
 	}
-
+	
 	return Math.ceil(pokemonNamesList.value.length / limit.value);
 });
 
 // List generation
 const pokemonList = ref<Pokemon[]>([]);
-const pokemonNamesList = ref<string[]>([]);
+const pokemonNamesList = ref<APIResourceWithId[]>([]);
 const currentPokemonNamesList = computed(() => {
 	if(searchQuery.value) {
 		return pokemonNamesSearched.value.slice(offset.value, offset.value + limit.value);
@@ -67,10 +68,10 @@ function getPokemonBatch(navigateTo?: 'next' | 'prev' | number) {
 	pokemonList.value = [];
 	
 	currentPokemonNamesList.value
-		.forEach(pokemonName => {
+		.forEach(({ name }) => {
 			pokemonList.value.push({} as Pokemon);
 			const index = pokemonList.value.length - 1;
-			useFetchPokemon(pokemonName)
+			useFetchPokemon(name)
 				.then(({ pokemon }: { pokemon: Ref<Pokemon | undefined> }) => {
 					if(pokemon.value) {
 						const pokemonIsInPage = pokemon.value?.id > offset.value && pokemon.value?.id <= offset.value + limit.value;
@@ -84,8 +85,8 @@ function getPokemonBatch(navigateTo?: 'next' | 'prev' | number) {
 }
 
 // Search
-const searchQuery = ref((route.query?.search as string) ||'');
-const pokemonNamesSearched = computed(() => pokemonNamesList.value.filter(name => name.toLowerCase().includes(searchQuery.value.toLowerCase())));
+const searchQuery = ref((route.query?.search as string) || '');
+const pokemonNamesSearched = computed(() => pokemonNamesList.value.filter(({ name }) => name.toLowerCase().includes(searchQuery.value.toLowerCase())));
 
 // Init
 const ID_STARTING_FORMS = 10_000;
@@ -97,7 +98,11 @@ async function getPokemonNames() {
 			const id = Number(url.match(/\/(\d+)\/$/)?.[1]);
 			return id < ID_STARTING_FORMS;
 		})
-		.map(({ name }) => name);
+		.map(({ name, url }) => {
+			// Regexp that gets the last param in an url
+			const id = Number(url.match(/\/(\d+)\/$/)?.[1]);
+			return { name, id };
+		});
 	debouncedFetchPokemonList();
 }
 getPokemonNames();
@@ -107,12 +112,13 @@ getPokemonNames();
 	<main>
 		<h1>Pokédev</h1>
 		<aside class="controls">
-			<input
-				v-model="searchQuery"
-				type="text"
-				placeholder="Search Pokémon"
-				@input="debouncedFetchPokemonList(1)"
-			>
+			<PokemonSearch
+				v-model:search-query="searchQuery"
+				:pokemon-list="pokemonNamesList"
+				:pokemon-names-searched="pokemonNamesSearched"
+				@search="debouncedFetchPokemonList(1)"
+				@clear-search="debouncedFetchPokemonList(1)"
+			/>
 			<Navigation
 				class="navigation"
 				:page="page"
@@ -137,31 +143,21 @@ getPokemonNames();
 </template>
 
 <style scoped lang="scss">
- main {
-	 display: flex;
-	 flex-direction: column;
-	 gap: 20px;
-	 width: 100%;
- }
- 
- .controls {
-	 display: flex;
-	 flex-wrap: wrap;
-	 align-items: center;
-	 justify-content: center;
-	 gap: 20px;
- }
- 
- input {
-	 flex: 1;
-	 color: var(--color-primary-text);
-	 border: 1px solid var(--color-primary);
-	 border-radius: 5px;
-	 background: var(--color-background);
-	 height: 40px;
-	 padding: 5px 10px;
- }
- 
+main {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: 100%;
+}
+
+.controls {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+}
+
 .pokemon-list {
 	display: grid;
 	grid-gap: 20px;

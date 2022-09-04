@@ -1,4 +1,3 @@
-
 /*
  * The name and the URL of the referenced resource.
  */
@@ -7,6 +6,16 @@ export interface NamedAPIResource {
 	name: string;
 	/** The URL of the referenced resource */
 	url: string;
+}
+
+/*
+ * The name and the URL of the referenced resource.
+ */
+export interface APIResourceWithId {
+	/** The name of the referenced resource */
+	name: string;
+	/** The ID of the referenced resource */
+	id: number;
 }
 
 /*

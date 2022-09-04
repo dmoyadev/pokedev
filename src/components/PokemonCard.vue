@@ -2,6 +2,7 @@
 import { onUpdated } from "vue";
 import { Pokemon } from "@/models/Pokemon";
 import { useFailedImg } from "@/composables/failedImg";
+import { capitalize } from "@/utils/strings";
 import IconType from "@/components/icons/IconType.vue";
 
 defineProps<{
@@ -11,8 +12,6 @@ defineProps<{
 
 const { replaceWithDefaultSprite, clearTriesList } = useFailedImg();
 onUpdated(() => clearTriesList());
-
-const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUpperCase());
 </script>
 
 <template>
