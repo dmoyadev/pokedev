@@ -15,14 +15,14 @@ export function useFailedImg() {
 			return;
 		}
 
-		const correctedName = `https://play.pokemonshowdown.com/sprites/ani/${pokemon.name.replaceAll('-', '')}.gif`;
+		const correctedName = `https://play.pokemonshowdown.com/sprites/ani/${pokemon?.name?.replaceAll('-', '')}.gif`;
 		if(!triedImages.value.includes(correctedName)) {
 			(e.target as HTMLImageElement).src = correctedName;
 			triedImages.value.push(correctedName);
 			return;
 		}
 
-		const defaultSprite = `https://play.pokemonshowdown.com/sprites/gen5/${pokemon.name}.png`;
+		const defaultSprite = `https://play.pokemonshowdown.com/sprites/gen5/${pokemon?.name}.png`;
 		if(!triedImages.value.includes(defaultSprite)) {
 			(e.target as HTMLImageElement).src = defaultSprite;
 			triedImages.value.push(defaultSprite);

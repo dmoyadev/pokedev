@@ -54,7 +54,7 @@ const capitalize = (str: string) => str.replace(/(?:^|\s|-)\S/g, (a) => a.toUppe
 	</section>
 	<section
 		v-else
-		class="card background-normal"
+		class="card type-normal"
 		data-number="#???"
 	>
 		<div class="pokemon-image">

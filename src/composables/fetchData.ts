@@ -8,7 +8,7 @@ export interface API_RESPONSE {
 	results: any[];
 }
 
-export async function useData(endpoint: string){
+export async function useFetchData(endpoint: string){
 	const isLoading = ref(true);
 	const error = ref();
 	const data = ref();

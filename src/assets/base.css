@@ -1,7 +1,11 @@
 :root {
+	--color-primary: #28a8d3;
+	--color-primary-text: #fff;
+
 	--color-background: #efefef;
 	--color-background-card: #c1c1c5;
 	--color-text: #2d3038;
+	--color-text-light: #6a707f;
 
 	--color-type-bug: #92BC2C;
 	--color-type-bug-diff: #92BC2Ccc;
@@ -43,9 +47,12 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
+		--color-primary-text: #fff;
+
 		--color-background: #2d3038;
 		--color-background-card: #4a4a54;
 		--color-text: #efefef;
+		--color-text-light: #a7a7a7;
 	}
 }
 
