@@ -107,7 +107,7 @@ function changePage(page: 'next' | 'prev' | number) {
 			<li
 				v-for="(n, index) in shownPages"
 				:key="index"
-				:class="{ 'active': n === (+$route.query?.page || 1) }"
+				:class="{ 'active': n === (+($route?.query?.page || 1)) }"
 			>
 				<RouterLink
 					v-if="n !== 0"

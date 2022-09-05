@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { capitalize } from "@/utils/strings";
 import { APIResourceWithId } from "@/models/Common";
+import IconClear from "@/components/icons/IconClear.vue";
 
 const props = defineProps<{
 	searchQuery: string;
@@ -21,7 +22,7 @@ const searchForm = ref();
 onMounted(() => {
 	window.addEventListener('mousedown', e => {
 		const clickedElement = e.target;
-		if (!searchForm.value.contains(clickedElement)) {
+		if (!searchForm.value?.contains(clickedElement)) {
 			showSuggestions.value = false;
 		}
 	});
@@ -43,20 +44,12 @@ function focusNextSuggestion() {
 	}
 }
 
-function selectSuggestion(element: HTMLElement, selection?: number) {
-	if(selection === -1 || (!selection && selectedSearchSuggestionIndex.value === -1)) {
-		clearSearch();
-		return;
-	}
-	
+function selectSuggestion(selection?: number) {
 	const search = selection
 		? capitalize(props.pokemonNamesSearched[selection]?.name || '')
 		: capitalize(props.pokemonNamesSearched[selectedSearchSuggestionIndex.value]?.name || '');
-	if(!search) {
-		return;
-	}
 	
-	emit('update:searchQuery', search);
+	emit('update:searchQuery', search || props.searchQuery);
 	
 	selectedSearchSuggestionIndex.value = 0;
 	showSuggestions.value = false;
@@ -77,37 +70,50 @@ function clearSearch() {
 		@submit.prevent="$emit('search')"
 		@keyup.down="focusNextSuggestion()"
 		@keyup.up="focusPreviousSuggestion()"
-		@keyup.enter="selectSuggestion($event.target)"
-		@keyup.esc="$event.target.blur()"
+		@keyup.enter="selectSuggestion()"
+		@keyup.esc="showSuggestions = false"
 		@blur="showSuggestions = false"
 	>
 		<input
 			:value="searchQuery"
 			type="text"
-			placeholder="Search Pokémon"
+			placeholder="Search Pokémon by name or number"
 			@click="showSuggestions = true"
-			@input="$emit('update:searchQuery', $event.target.value)"
+			@input="$emit('update:searchQuery', $event?.target && $event.target['value'])"
 			@focus="showSuggestions = true"
 		>
+		<button
+			v-if="searchQuery"
+			type="reset"
+			@click="clearSearch()"
+		>
+			<IconClear class="icon" />
+		</button>
 		<ul
 			v-if="showSuggestions"
 			class="search-suggestions"
 		>
 			<li
+				v-if="searchQuery"
 				:class="{ 'active': selectedSearchSuggestionIndex === -1 }"
-				@click="clearSearch()"
+				@mouseover="selectedSearchSuggestionIndex = -1"
+				@click="selectSuggestion()"
 			>
-				<i>Clear the searching</i>
+				<i>{{ searchQuery }}</i>
 			</li>
 			<li
 				v-for="(searchSuggestion, index) in pokemonNamesSearched"
 				:key="index"
 				:class="{ 'active': pokemonNamesSearched[selectedSearchSuggestionIndex]?.id === searchSuggestion.id }"
-				@click="selectSuggestion($event.target, index)"
+				@mouseover="selectedSearchSuggestionIndex = index"
+				@click="selectSuggestion(index)"
 			>
 				#{{ String(searchSuggestion.id).padStart(3, '0') }} - {{ capitalize(searchSuggestion.name) }}
 			</li>
-			<li v-if="pokemonNamesSearched.length === 0">
+			<li
+				v-if="pokemonNamesSearched.length === 0"
+				class="empty-list"
+			>
 				<i>No results found</i>
 			</li>
 		</ul>
@@ -128,6 +134,27 @@ form {
 		padding: 5px 10px;
 	}
 	
+	button {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		background: none;
+		color: var(--color-primary-text);
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		
+		.icon {
+			width: 15px;
+			height: 15px;
+		}
+	}
+	
 	.search-suggestions {
 		min-width: 50%;
 		background: var(--color-background);
@@ -144,7 +171,6 @@ form {
 		li {
 			padding: 10px;
 			
-			&:hover,
 			&.active {
 				cursor: pointer;
 				background: var(--color-hover);

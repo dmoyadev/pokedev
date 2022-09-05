@@ -86,7 +86,10 @@ function getPokemonBatch(navigateTo?: 'next' | 'prev' | number) {
 
 // Search
 const searchQuery = ref((route.query?.search as string) || '');
-const pokemonNamesSearched = computed(() => pokemonNamesList.value.filter(({ name }) => name.toLowerCase().includes(searchQuery.value.toLowerCase())));
+const pokemonNamesSearched = computed(() => pokemonNamesList.value.filter(({ name, id }) => {
+	return name.toLowerCase().includes(searchQuery.value?.toLowerCase())
+		|| id === Number(searchQuery.value);
+}));
 
 // Init
 const ID_STARTING_FORMS = 10_000;
