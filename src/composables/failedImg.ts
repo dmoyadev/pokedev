@@ -15,6 +15,17 @@ export function useFailedImg() {
 			return;
 		}
 
+		//Get all strings after a dash
+		const gigaMax = pokemon.name.split("-")[1] || pokemon.name;
+		if(gigaMax === 'gmax') {
+			const gigaMaxName = `https://play.pokemonshowdown.com/sprites/gen5/${pokemon.name}.png`;
+			if(!triedImages.value.includes(gigaMaxName)) {
+				(e.target as HTMLImageElement).src = gigaMaxName;
+				triedImages.value.push(gigaMaxName);
+				return;
+			}
+		}
+
 		const correctedName = `https://play.pokemonshowdown.com/sprites/ani/${pokemon?.species?.name?.replaceAll('-', '')}.gif`;
 		if(!triedImages.value.includes(correctedName)) {
 			(e.target as HTMLImageElement).src = correctedName;
@@ -26,7 +37,10 @@ export function useFailedImg() {
 		if(!triedImages.value.includes(defaultSprite)) {
 			(e.target as HTMLImageElement).src = defaultSprite;
 			triedImages.value.push(defaultSprite);
+			return;
 		}
+
+		(e.target as HTMLImageElement).parentNode?.removeChild(e.target as HTMLImageElement);
 	}
 
 	function clearTriesList() {

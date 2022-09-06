@@ -151,7 +151,6 @@ a {
 	justify-content: center;
 	align-items: center;
 	font-size: 18px;
-	color: currentColor;
 	text-decoration: none;
 	border-radius: 5px;
 	background: transparent;

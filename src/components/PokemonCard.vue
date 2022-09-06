@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import { onUpdated } from "vue";
 import { Pokemon } from "@/models/Pokemon";
-import { useFailedImg } from "@/composables/failedImg";
 import { capitalize } from "@/utils/strings";
 import IconType from "@/components/icons/IconType.vue";
+import PokemonImage from "@/components/PokemonImage.vue";
 
 defineProps<{
 	pokemon?: Pokemon,
 	isLoading?: boolean,
 }>();
-
-const { replaceWithDefaultSprite, clearTriesList } = useFailedImg();
-onUpdated(() => clearTriesList());
 </script>
 
 <template>
@@ -22,14 +18,10 @@ onUpdated(() => clearTriesList());
 		:class="'type-' + pokemon?.types[0].type.name"
 		:data-number="'#' + String(pokemon?.id).padStart(3, '0')"
 	>
-		<div class="pokemon-image">
-			<img
-				loading="lazy"
-				:src="`https://play.pokemonshowdown.com/sprites/ani/${pokemon.species?.name}.gif`"
-				:alt="'Sprite ' + pokemon.species?.name"
-				@error="replaceWithDefaultSprite($event, pokemon)"
-			>
-		</div>
+		<PokemonImage
+			class="pokemon-image"
+			:pokemon="pokemon"
+		/>
 		
 		<h2 class="pokemon-name">
 			{{ capitalize(pokemon.species?.name) }}
@@ -82,9 +74,8 @@ onUpdated(() => clearTriesList());
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	color: currentColor;
 	
-	&:before{
+	&:before {
 		content: '';
 		position: absolute;
 		top: 0;
@@ -114,7 +105,7 @@ onUpdated(() => clearTriesList());
 	&.type-steel:before { background: var(--color-type-steel-diff); }
 	&.type-water:before { background: var(--color-type-water-diff); }
 	
-	&:after{
+	&:after {
 		content: attr(data-number);
 		position: absolute;
 		font-size: 80px;

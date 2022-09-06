@@ -154,6 +154,13 @@ export interface PokemonSprites {
 	back_female: string;
 	/** The shiny female depiction of this Pokémon from the back in battle */
 	back_shiny_female: string;
+	/** Other sprites of the Pokémon */
+	other?: {
+		dreamWorld?: { [key: string]: string },
+		home?: { [key: string]: string },
+		official_artwork?: { [key: string]: string },
+	}
+	versions?: { [key: string]: { [key: string]: string } | string }
 }
 
 /*
@@ -709,3 +716,7 @@ export interface Type {
 	/** A list of moves that have this type */
 	moves: NamedAPIResource[];
 }
+
+export interface PokemonWithSpecie extends Pokemon, PokemonSpecies {}
+
+export interface PokemonStatWithData extends Stat, PokemonStat {}

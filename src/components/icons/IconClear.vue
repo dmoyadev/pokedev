@@ -8,7 +8,7 @@
 	</svg>
 </template>
 
-<style>
+<style scoped lang="scss">
 path {
 	fill-rule: evenodd;
 }
