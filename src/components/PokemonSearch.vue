@@ -77,7 +77,7 @@ function clearSearch() {
 		<input
 			:value="searchQuery"
 			type="text"
-			placeholder="Search Pokémon by name or number"
+			placeholder="Buscar Pokémon por nombre o número"
 			@click="showSuggestions = true"
 			@input="$emit('update:searchQuery', $event?.target && $event.target['value'])"
 			@focus="showSuggestions = true"
@@ -114,7 +114,7 @@ function clearSearch() {
 				v-if="pokemonNamesSearched.length === 0"
 				class="empty-list"
 			>
-				<i>No results found</i>
+				<i>No hay Pokémon con esa búsqueda</i>
 			</li>
 		</ul>
 	</form>
@@ -122,8 +122,6 @@ function clearSearch() {
 
 <style scoped lang="scss">
 form {
-	flex: 1;
-	
 	input {
 		width: 100%;
 		color: var(--color-primary-text);

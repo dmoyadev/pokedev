@@ -26,6 +26,7 @@ module.exports = {
 			"attribute": 1,
 			"baseIndent": 1
 		}],
+		"vue/no-setup-props-destructure": 'off',
 		"semi": ['error', 'always'],
 		"no-mixed-spaces-and-tabs": ['off']
 	},
