@@ -49,9 +49,18 @@ const chartOptions = computed(() => {
 	return {
 		chart: {
 			type: 'radar',
+			parentHeightOffset: 0,
 			toolbar: {
 				show: false
 			},
+		},
+		grid: {
+			padding: {
+				left: 25,
+				right: 0,
+				top: 0,
+				bottom: 0
+			}
 		},
 		theme: {
 			monochrome: {
@@ -100,7 +109,7 @@ watch(() => props.pokemon, (value) => {
 <template>
 	<VueApexCharts
 		v-if="statsData.length"
-		height="300"
+		height="250"
 		width="300"
 		type="radar"
 		:options="chartOptions"
