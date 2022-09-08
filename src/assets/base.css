@@ -8,6 +8,7 @@
 	--color-background-card: #c1c1c5;
 	--color-text: #2d3038;
 	--color-text-light: #6a707f;
+	--color-text-alpha: rgba(45, 48, 56, .2);
 
 	--color-type-bug: #92BC2C;
 	--color-type-bug-diff: #92BC2Ccc;
@@ -55,6 +56,7 @@
 		--color-background-card: #4a4a54;
 		--color-text: #efefef;
 		--color-text-light: #a7a7a7;
+		--color-text-alpha: rgba(239, 239, 239, .2);
 	}
 }
 

@@ -11,6 +11,7 @@ import Navigation from "@/components/PageNavigation.vue";
 import PokemonSearch from "@/components/PokemonSearch.vue";
 import { Generation } from "@/models/Game";
 import { capitalize } from "@/utils/strings";
+import { useFetchGenerations } from "@/composables/fetchGenerations";
 
 // Pagination
 const route = useRoute();
@@ -79,7 +80,7 @@ const isFiltering = computed(() => searchQuery.value || generationQuery.value);
 const searchQuery = ref('');
 
 const generationQuery = ref<Generation>();
-const generationsList = ref<Generation[]>([]);
+const { generations } = useFetchGenerations();
 
 const pokemonNamesFiltered = computed(() => pokemonNamesList.value.filter(({ name, id }) => {
 	const search = searchQuery.value
@@ -111,19 +112,6 @@ async function getPokemonNames() {
 }
 getPokemonNames();
 
-async function getGenerations() {
-	const { data }: { data: Ref<NamedAPIResourceList> } = await useFetchData(`generation`);
-	data.value.results.forEach(({ url }) => {
-		useFetchData(url)
-			.then((result) => {
-				const { data } = result;
-				if(data.value) {
-					generationsList.value.push(data.value);
-				}
-			});
-	});
-}
-getGenerations();
 </script>
 
 <template>
@@ -141,7 +129,7 @@ getGenerations();
 					Todas las generaciones
 				</option>
 				<option
-					v-for="(generation, index) in generationsList"
+					v-for="(generation, index) in generations"
 					:key="index"
 					:value="generation"
 				>

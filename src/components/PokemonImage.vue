@@ -1,17 +1,35 @@
 <script setup lang="ts">
 import { Pokemon, PokemonWithSpecie } from "@/models/Pokemon";
 import { useFailedImg } from "@/composables/failedImg";
-import { onUpdated, ref } from "vue";
+import { computed, onUpdated, ref } from "vue";
 
 const props = defineProps<{
 	pokemon: Pokemon | PokemonWithSpecie;
 	imageName?: string;
+	notAnimated?: boolean;
+	type?: 'artwork';
 }>();
 
 const { replaceWithDefaultSprite, clearTriesList } = useFailedImg();
 onUpdated(() => clearTriesList());
 
-const image = ref(`https://play.pokemonshowdown.com/sprites/ani/${props.imageName || props.pokemon?.species?.name}.gif`);
+const animatedSprite = ref(`https://play.pokemonshowdown.com/sprites/ani/${props.imageName || props.pokemon?.species?.name}.gif`);
+const otherImageUrl = computed(() => {
+	let url;
+	switch(props.type) {
+	case 'artwork':
+		url = props.pokemon?.sprites?.other?.['official-artwork']?.front_default;
+		break;
+	default:
+		url = props.pokemon?.sprites?.front_default;
+	}
+	
+	return url ? url : animatedSprite.value;
+});
+const image = ref(props.notAnimated
+	? otherImageUrl
+	: animatedSprite.value
+);
 </script>
 
 <template>

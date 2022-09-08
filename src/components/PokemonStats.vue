@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFetchData } from "@/composables/fetchData";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { capitalize, translate } from "@/utils/strings";
 import { PokemonStatWithData, PokemonWithSpecie } from "@/models/Pokemon";
 import VueApexCharts from 'vue3-apexcharts';
@@ -11,19 +11,6 @@ const props = defineProps<{
 
 // Stats chart data
 const statsData = ref<PokemonStatWithData[]>([]);
-
-function getStatsData() {
-	props.pokemon?.stats.forEach(({ stat }) => {
-		useFetchData(stat.url)
-			.then(({ data }) => {
-				const pokemonStat = props.pokemon?.stats.find(({ stat: { name } }) => name === data.value.name);
-				statsData.value.push({
-					...data.value ,
-					...pokemonStat
-				});
-			});
-	});
-}
 
 const COLOR_TO_HEX = {
 	bug: "#92BC2C",
@@ -99,10 +86,15 @@ const chartSeries = computed(() => {
 });
 
 // Init
-watch(() => props.pokemon, (value) => {
-	if(value) {
-		getStatsData();
-	}
+props.pokemon?.stats.forEach(({ stat }) => {
+	useFetchData(stat.url)
+		.then(({ data }) => {
+			const pokemonStat = props.pokemon?.stats.find(({ stat: { name } }) => name === data.value.name);
+			statsData.value.push({
+				...data.value ,
+				...pokemonStat
+			});
+		});
 });
 </script>
 

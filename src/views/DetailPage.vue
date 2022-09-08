@@ -3,20 +3,19 @@ import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import { useFetchPokemon } from "@/composables/fetchPokemon";
 import { PokemonWithSpecie } from "@/models/Pokemon";
-import { capitalize, translate, translateFlavorText, translateGenus } from "@/utils/strings";
+import { capitalize, translate, translateGenus } from "@/utils/strings";
+import { flattenObject } from "@/utils/object";
 import PokemonImage from "@/components/PokemonImage.vue";
-import IconType from "@/components/icons/IconType.vue";
 import IconArrowLeft from "@/components/icons/IconArrowLeft.vue";
 import PokemonStats from "@/components/PokemonStats.vue";
-import { flattenObject } from "@/utils/object";
-import IconMale from "@/components/icons/IconMale.vue";
-import IconFemale from "@/components/icons/IconFemale.vue";
-import IconPokeball from "@/components/icons/IconPokeball.vue";
+import PokemonInfo from "@/components/PokemonInfo.vue";
+import { useFetchGenerations } from "@/composables/fetchGenerations";
 
 // Get Pokémon data
 const route = useRoute();
 const pokemonName = ref(route.params.name);
 const pokemon = ref<PokemonWithSpecie>();
+const { generations } = useFetchGenerations();
 const pokemonVarieties = ref<PokemonWithSpecie[]>([]);
 async function loadPokemonDetails() {
 	const { pokemon: data } = await useFetchPokemon(pokemonName.value as string, true);
@@ -43,131 +42,77 @@ loadPokemonDetails();
 		:data-number="'#' + String(pokemon?.id).padStart(3, '0')"
 	>
 		<header>
-			<RouterLink to="/">
+			<!-- Back button -->
+			<RouterLink
+				to="#"
+				@click="$router.go(-1)"
+			>
 				<IconArrowLeft class="icon" />
 			</RouterLink>
+			
+			<!-- Pokémon icon -->
 			<img
 				v-if="pokemon?.sprites?.versions?.['generation-viii']?.['icons']?.front_default"
 				:src="pokemon?.sprites?.versions?.['generation-viii']?.['icons']?.front_default"
 				:alt="'Sprite de ' + pokemon?.name"
 			>
-			<h1>{{ capitalize(translate(pokemon?.names || [])) }}</h1>
+			
+			<!-- Pokémon name -->
+			<span>
+				{{ capitalize(translate(pokemon?.names || [])) }}
+				·
+				<em>{{ translateGenus(pokemon?.genera || []) }}</em>
+			</span>
 		</header>
-		<h2>{{ translateGenus(pokemon?.genera || []) }}</h2>
 		
-		<PokemonImage
-			class="pokemon-image"
-			:pokemon="pokemon"
-			:image-name="String(pokemonName)"
-		/>
+		<!-- Pokémon image -->
+		<aside class="pokemon">
+			<PokemonImage
+				v-if="pokemon"
+				class="pokemon-image"
+				:not-animated="true"
+				type="artwork"
+				:pokemon="pokemon"
+			/>
+			
+			<h1>
+				{{ '#' + String(pokemon?.id).padStart(3, '0') }}
+				{{ capitalize(translate(pokemon?.names || [])) }}
+			</h1>
+			<!-- Pokémon genera -->
+			<h2>{{ capitalize(translate(pokemon?.names || [], 'ja')) }}</h2>
+		</aside>
 		
-		<section class="pokemon-info">
+		<!-- Pokémon info -->
+		<section
+			v-if="pokemon"
+			class="pokemon-info"
+		>
 			<h3 class="title">
 				Información básica
 			</h3>
 			
-			<div class="content">
-				<div class="row">
-					<div class="pokemon-data-info pokemon-data-type">
-						<h3>Tipo{{ pokemon?.types.length > 1 ? 's' : '' }}</h3>
-						<div class="pokemon-types">
-							<IconType
-								v-for="(type, index) in pokemon?.types"
-								:key="index"
-								:pokemon-type="type.type.name"
-								class="pokemon-type"
-							/>
-						</div>
-					</div>
-					
-					<div class="pokemon-data-info pokemon-data-description">
-						<h3>Descripción</h3>
-						<span class="description">
-							{{ translateFlavorText(pokemon?.flavor_text_entries || []) }}
-						</span>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="pokemon-data-info pokemon-data-id">
-						<h3>Número</h3>
-						<span>#{{ String(pokemon?.id).padStart(3, '0') }}</span>
-					</div>
-					
-					<div class="pokemon-data-info pokemon-data-height">
-						<h3>Altura</h3>
-						<span>{{ (pokemon?.height/10).toFixed(1) }}m</span>
-					</div>
-					
-					<div class="pokemon-data-info pokemon-data-weight">
-						<h3>Peso</h3>
-						<span>{{ (pokemon?.weight/10).toFixed(1) }}kg</span>
-					</div>
-					
-					<div class="pokemon-data-info pokemon-data-shape">
-						<h3>Forma</h3>
-						<div
-							v-if="pokemon?.shape"
-							class="shape"
-						>
-							<img
-								:src="`shapes/${pokemon.shape.name}.webp`"
-								:alt="'Forma de ' + pokemon?.name"
-							>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="pokemon-data-info pokemon-data-genders">
-						<h3>Ratio de géneros</h3>
-						<div
-							v-if="pokemon?.gender_rate !== -1"
-							class="genders"
-						>
-							<div class="gender">
-								<IconMale class="male" />
-								<span>{{ 100 - (pokemon?.gender_rate * 100 / 8) }}%</span>
-							</div>
-							<span>/</span>
-							<div class="gender">
-								<IconFemale class="female" />
-								<span>{{ pokemon?.gender_rate * 100 / 8 }}%</span>
-							</div>
-						</div>
-						<div v-else>
-							Desconocido
-						</div>
-					</div>
-					
-					<div class="pokemon-data-info pokemon-data-catch">
-						<h3>Ratio de captura</h3>
-						<div class="catch-rate">
-							<IconPokeball class="icon" />
-							<span>{{ (pokemon?.capture_rate * 100 / 255).toFixed(2) }}%</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		
-		<section class="pokemon-stats">
-			<h3 class="title">
-				Estadísticas
-			</h3>
-			
-			<PokemonStats
+			<PokemonInfo
 				class="content"
 				:pokemon="pokemon"
+				:generation="generations.find(gen => gen.name === pokemon?.generation.name)"
 			/>
 		</section>
 		
+		<!-- Pokémon stats -->
+		<PokemonStats
+			v-if="pokemon"
+			class="content"
+			:pokemon="pokemon"
+		/>
+		
+		<!-- Pokémon forms -->
 		<section
 			v-if="pokemonVarieties.length > 1"
 			class="pokemon-varieties"
 		>
 			<h3 class="title">
-				Variedades:
+				Formas:
 			</h3>
 			
 			<div class="content">
@@ -190,7 +135,7 @@ loadPokemonDetails();
 			class="pokemon-sprites"
 		>
 			<h3 class="title">
-				Otros sprites:
+				Sprites:
 			</h3>
 			
 			<div class="content">
@@ -211,6 +156,8 @@ loadPokemonDetails();
 </template>
 
 <style scoped lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+
 main {
 	background: var(--color-background);
 	position: relative;
@@ -225,7 +172,7 @@ main {
 		right: -30px;
 		width: 100%;
 		height: 100%;
-		clip-path: circle(150px at calc(80% - 30px) 100px);
+		clip-path: circle(150px at calc(100% - 150px) 100px);
 		transition: 0.5s ease-in-out;
 	}
 	
@@ -252,22 +199,36 @@ main {
 		content: attr(data-number);
 		position: absolute;
 		font-size: 80px;
-		top: 20px;
-		right: calc(15% - 30px);
+		top: 25px;
+		right: 30px;
 		font-weight: 800;
 		font-style: italic;
 		color: rgba(255, 255, 255, 0.1);
 	}
+}
+
+main {
+	display: grid;
+	grid-template-columns: auto minmax(auto, 350px);
+	grid-template-rows: repeat(5, auto);
+	gap: 20px 50px;
+	grid-template-areas:
+    "header             pokemon"
+    "pokemon-info       pokemon"
+    "pokemon-stats      pokemon-stats"
+    "pokemon-varieties  pokemon-varieties"
+    "pokemon-sprites    pokemon-sprites";
 	
-	.pokemon-image {
-		position: absolute;
-		top: 20px;
-		right: 15%;
-		z-index: 10;
-	}
+	header { grid-area: header; }
+	.pokemon { grid-area: pokemon; }
+	.pokemon-info { grid-area: pokemon-info; }
+	.pokemon-stats { grid-area: pokemon-stats; }
+	.pokemon-varieties { grid-area: pokemon-varieties; }
+	.pokemon-sprites { grid-area: pokemon-sprites; }
 }
 
 header {
+	min-width: 335px;
 	display: flex;
 	align-items: center;
 	
@@ -275,11 +236,17 @@ header {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-	
-	.icon {
-		width: 16px;
-		margin-right: 10px;
+		min-height: 40px;
+		min-width: 40px;
+		
+		&:hover {
+			border-radius: 50%;
+			background-color: var(--color-hover);
+		}
+		
+		.icon {
+			width: 16px;
+		}
 	}
 	
 	img {
@@ -289,9 +256,39 @@ header {
 		top: -10px;
 	}
 	
-	h1 {
+	span {
 		font-size: 24px;
 		font-weight: bold;
+		white-space: nowrap;
+	}
+}
+
+.pokemon {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	
+	.pokemon-image {
+		z-index: 10;
+		width: 250px;
+		height: 250px;
+	}
+	
+	h1 {
+		font-weight: bold;
+		font-size: 40px;
+		text-align: right;
+		z-index: 1;
+	}
+	
+	h2 {
+		font-family: 'Kaushan Script', cursive;
+		color: var(--color-text-alpha);
+		font-size: 50px;
+		position: relative;
+		top: -20px;
+		z-index: 0;
+		line-height: .8;
 	}
 }
 
@@ -305,121 +302,23 @@ section {
 		font-weight: bold;
 		margin-bottom: 20px;
 	}
-}
-
-/* Pokémon Data */
-.pokemon-info {
-	max-width: 450px;
 	
 	.content {
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
-		
-		.row {
-			display: flex;
-			justify-content: space-between;
-			gap: 20px;
-		}
-	}
-	
-	.pokemon-data-info {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-		
-		h3 {
-			font-weight: bold;
-			text-transform: uppercase;
-			font-size: 10px;
-			margin: 0;
-			
-			.icon {
-				height: 12px;
-			}
-		}
-		
-		span {
-			font-size: 22px;
-			font-weight: lighter;
-		}
-	}
-	
-	.pokemon-data-type {
-		width: 25%;
-		
-		.pokemon-types {
-			margin: 5px 0;
-			display: flex;
-			gap: 5px;
-			
-			.pokemon-type {
-				width: 35px;
-				height: 35px;
-			}
-		}
-	}
-	
-	.pokemon-data-description {
-		flex: 1;
-		
-		.description {
-			font-size: 18px !important;
-			font-style: italic;
-		}
-	}
-	
-	.shape {
-		width: 25px;
-		height: 25px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		
-		img {
-			max-width: 100%;
-			max-height: 100%;
-		}
-	}
-	
-	.genders {
-		display: flex;
-		gap: 10px;
-		justify-content: center;
-		
-		.gender {
-			display: flex;
-			align-items: center;
-			gap: 5px;
-		}
-		
-		.male, .female {
-			width: 20px;
-			height: 20px;
-			color: cornflowerblue;
-		}
-		
-		.female {
-			color: hotpink;
-		}
-	}
-	
-	.catch-rate {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		
-		.icon {
-			width: 20px;
-			height: 20px;
-		}
 	}
 }
 
+.pokemon-info {
+	min-width: 335px;
+}
+
 /* Pokémon Sprites */
-.pokemon-sprites .content {
-	width: 100%;
+.pokemon-sprites .content,
+.pokemon-varieties .content {
 	display: flex;
+	flex-direction: row;
 	flex-wrap: wrap;
 	gap: 5px;
 	align-items: center;

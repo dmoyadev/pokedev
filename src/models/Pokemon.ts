@@ -156,9 +156,20 @@ export interface PokemonSprites {
 	back_shiny_female: string;
 	/** Other sprites of the Pokémon */
 	other?: {
-		dreamWorld?: { [key: string]: string },
-		home?: { [key: string]: string },
-		official_artwork?: { [key: string]: string },
+		dreamWorld?: {
+			front_default: string;
+			front_female?: string;
+		},
+		home?: {
+			front_default: string;
+			front_female?: string;
+			front_default_shiny: string;
+			front_default_shiny_female: string;
+		},
+		'official-artwork'?: {
+			front_default: string;
+			front_female?: string;
+		},
 	}
 	versions?: { [key: string]: { [key: string]: string } | string }
 }
