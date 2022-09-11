@@ -9,7 +9,7 @@ import { Generation } from "@/models/Game";
 
 defineProps<{
 	pokemon: PokemonWithSpecie;
-	generation: Generation
+	generation?: Generation
 }>();
 </script>
 
@@ -42,7 +42,10 @@ defineProps<{
 				<span>#{{ String(pokemon.id).padStart(3, '0') }}</span>
 			</div>
 			
-			<div class="pokemon-data-info pokemon-data-generation">
+			<div
+				v-if="generation"
+				class="pokemon-data-info pokemon-data-generation"
+			>
 				<h3>Región</h3>
 				<span>{{ capitalize(generation.main_region.name) }}</span>
 			</div>

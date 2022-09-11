@@ -111,7 +111,6 @@ async function getPokemonNames() {
 	debouncedFetchPokemonList();
 }
 getPokemonNames();
-
 </script>
 
 <template>

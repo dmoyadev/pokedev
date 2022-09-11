@@ -43,13 +43,25 @@ export function useFailedImg() {
 		(e.target as HTMLImageElement).parentNode?.removeChild(e.target as HTMLImageElement);
 	}
 
+	function replaceUsingName(e: Event, pokemonName: string) {
+		const correctedName = `https://play.pokemonshowdown.com/sprites/ani/${pokemonName.replaceAll('-', '')}.gif`;
+		if(!triedImages.value.includes(correctedName)) {
+			(e.target as HTMLImageElement).src = correctedName;
+			triedImages.value.push(correctedName);
+			return;
+		}
+
+		(e.target as HTMLImageElement).parentNode?.removeChild(e.target as HTMLImageElement);
+	}
+
 	function clearTriesList() {
 		triedImages.value = [];
 	}
 
 	return {
 		clearTriesList,
-		replaceWithDefaultSprite
+		replaceWithDefaultSprite,
+		replaceUsingName
 	};
 
 }

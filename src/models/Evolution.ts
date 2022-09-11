@@ -57,7 +57,7 @@ export interface EvolutionDetail {
 	 * */
 	relative_physical_stats: 1 | 0 | -1;
 	/** The required time of day. Day or night. */
-	time_of_day: "Day" | "Night";
+	time_of_day: "day" | "night" | "";
 	/** Pokémon species for which this one must be traded. */
 	trade_species: NamedAPIResource;
 	/** Whether the 3DS needs to be turned upside-down as this Pokémon levels up. */
@@ -74,7 +74,7 @@ export interface ChainLink {
 	/** The Pokémon species at this point in the evolution chain */
 	species: NamedAPIResource;
 	/** All details regarding the specific details of the referenced Pokémon species evolution */
-	evolution_detail: EvolutionDetail[];
+	evolution_details: EvolutionDetail[];
 	/** A List of chain objects */
 	evolves_to: ChainLink[];
 }

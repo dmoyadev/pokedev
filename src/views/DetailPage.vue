@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { computed, ref } from "vue";
 import { useFetchPokemon } from "@/composables/fetchPokemon";
-import { PokemonWithSpecie } from "@/models/Pokemon";
+import { PokemonSpeciesVariety, PokemonWithSpecie } from "@/models/Pokemon";
 import { capitalize, translate, translateGenus } from "@/utils/strings";
 import { flattenObject } from "@/utils/object";
 import PokemonImage from "@/components/PokemonImage.vue";
@@ -10,17 +10,31 @@ import IconArrowLeft from "@/components/icons/IconArrowLeft.vue";
 import PokemonStats from "@/components/PokemonStats.vue";
 import PokemonInfo from "@/components/PokemonInfo.vue";
 import { useFetchGenerations } from "@/composables/fetchGenerations";
+import { APIResource } from "@/models/Common";
+import { useFetchData } from "@/composables/fetchData";
+import PokemonEvolutionChain from "@/components/PokemonEvolutionChain.vue";
+import { EvolutionChain } from "@/models/Evolution";
 
 // Get Pokémon data
 const route = useRoute();
 const pokemonName = ref(route.params.name);
 const pokemon = ref<PokemonWithSpecie>();
 const { generations } = useFetchGenerations();
-const pokemonVarieties = ref<PokemonWithSpecie[]>([]);
 async function loadPokemonDetails() {
 	const { pokemon: data } = await useFetchPokemon(pokemonName.value as string, true);
+	if(!data.value) return;
+	
 	pokemon.value = data.value;
-	pokemon.value?.varieties?.forEach(({ pokemon: { name } }) => {
+	getVarieties(pokemon.value.varieties);
+	if(pokemon.value?.evolution_chain) {
+		await getEvolutionChain(pokemon.value.evolution_chain);
+	}
+}
+
+// Pokémon varieties
+const pokemonVarieties = ref<PokemonWithSpecie[]>([]);
+function getVarieties(varieties: PokemonSpeciesVariety[]) {
+	varieties.forEach(({ pokemon: { name } }) => {
 		useFetchPokemon(name, true)
 			.then(({ pokemon: dataVariety }) => {
 				if(dataVariety.value) {
@@ -28,6 +42,15 @@ async function loadPokemonDetails() {
 				}
 			});
 	});
+}
+
+//Pokémon evolution chain
+const evolutionChain = ref<EvolutionChain>();
+function getEvolutionChain(evolution: APIResource) {
+	useFetchData(evolution.url)
+		.then(({ data }) => {
+			evolutionChain.value = data.value;
+		});
 }
 
 const pokemonSprites = computed(() => flattenObject(pokemon.value?.sprites || {}));
@@ -105,6 +128,20 @@ loadPokemonDetails();
 			class="content"
 			:pokemon="pokemon"
 		/>
+		
+		<section
+			v-if="evolutionChain"
+			class="pokemon-evolution-chain"
+		>
+			<h3 class="title">
+				Cadena de evolución
+			</h3>
+			
+			<PokemonEvolutionChain
+				v-if="evolutionChain"
+				:evolution="evolutionChain?.chain"
+			/>
+		</section>
 		
 		<!-- Pokémon forms -->
 		<section
@@ -210,19 +247,21 @@ main {
 main {
 	display: grid;
 	grid-template-columns: auto minmax(auto, 350px);
-	grid-template-rows: repeat(5, auto);
+	grid-template-rows: repeat(6, auto);
 	gap: 20px 50px;
 	grid-template-areas:
-    "header             pokemon"
-    "pokemon-info       pokemon"
-    "pokemon-stats      pokemon-stats"
-    "pokemon-varieties  pokemon-varieties"
-    "pokemon-sprites    pokemon-sprites";
+    "header                     pokemon"
+    "pokemon-info               pokemon"
+    "pokemon-evolution-chain    pokemon-evolution-chain"
+    "pokemon-stats              ."
+    "pokemon-varieties          pokemon-varieties"
+    "pokemon-sprites            pokemon-sprites";
 	
 	header { grid-area: header; }
 	.pokemon { grid-area: pokemon; }
 	.pokemon-info { grid-area: pokemon-info; }
 	.pokemon-stats { grid-area: pokemon-stats; }
+	.pokemon-evolution-chain { grid-area: pokemon-evolution-chain; }
 	.pokemon-varieties { grid-area: pokemon-varieties; }
 	.pokemon-sprites { grid-area: pokemon-sprites; }
 }
