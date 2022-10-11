@@ -3,10 +3,23 @@ import { Pokemon } from "@/models/Pokemon";
 import { capitalize } from "@/utils/strings";
 import IconType from "@/components/icons/IconType.vue";
 import PokemonImage from "@/components/PokemonImage.vue";
+import { computed } from "vue";
 
 const props = defineProps<{
 	pokemon?: Pokemon,
 }>();
+
+const typesGradient = computed(() => {
+	if (!props.pokemon?.types?.length) return "";
+	
+	const colors = props.pokemon.types.map((type) => {
+		return `var(--color-type-${type.type.name}-diff)`;
+	});
+	
+	return colors.length > 1
+		? `linear-gradient(135deg, ${colors[0]} 0%, ${colors[0]} 60%, ${colors[1]} 60%, ${colors[1]} 100%)`
+		: colors;
+});
 </script>
 
 <template>
@@ -82,27 +95,9 @@ const props = defineProps<{
 		width: 100%;
 		height: 100%;
 		clip-path: circle(60px at 80% 20%);
+		background: v-bind(typesGradient);
 		transition: 0.5s ease-in-out;
 	}
-	
-	&.type-bug:before { background: var(--color-type-bug-diff); }
-	&.type-dark:before { background: var(--color-type-dark-diff); }
-	&.type-dragon:before { background: var(--color-type-dragon-diff); }
-	&.type-electric:before { background: var(--color-type-electric-diff); }
-	&.type-fire:before { background: var(--color-type-fire-diff); }
-	&.type-fairy:before { background: var(--color-type-fairy-diff); }
-	&.type-fighting:before { background: var(--color-type-fighting-diff); }
-	&.type-flying:before { background: var(--color-type-flying-diff); }
-	&.type-ghost:before { background: var(--color-type-ghost-diff); }
-	&.type-grass:before { background: var(--color-type-grass-diff); }
-	&.type-ground:before { background: var(--color-type-ground-diff); }
-	&.type-ice:before { background: var(--color-type-ice-diff); }
-	&.type-normal:before { background: var(--color-type-normal-diff); }
-	&.type-poison:before { background: var(--color-type-poison-diff); }
-	&.type-psychic:before { background: var(--color-type-psychic-diff); }
-	&.type-rock:before { background: var(--color-type-rock-diff); }
-	&.type-steel:before { background: var(--color-type-steel-diff); }
-	&.type-water:before { background: var(--color-type-water-diff); }
 	
 	&:after {
 		content: attr(data-number);

@@ -208,6 +208,7 @@ main {
 	
 	.search {
 		flex: 2;
+		min-width: 150px;
 	}
 }
 

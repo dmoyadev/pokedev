@@ -57,6 +57,18 @@ const pokemonSprites = computed(() => flattenObject(pokemon.value?.sprites || {}
 
 // Init
 loadPokemonDetails();
+
+const typesGradient = computed(() => {
+	if (!pokemon.value?.types?.length) return "";
+	
+	const colors = pokemon.value.types.map((type) => {
+		return `var(--color-type-${type.type.name}-diff)`;
+	});
+	
+	return colors.length > 1
+		? `linear-gradient(135deg, ${colors[0]} 0%, ${colors[0]} 50%, ${colors[1]} 50%, ${colors[1]} 100%)`
+		: colors;
+});
 </script>
 
 <template>
@@ -205,32 +217,14 @@ main {
 	&:before {
 		content: '';
 		position: absolute;
-		top: -30px;
+		top: -80px;
 		right: -30px;
-		width: 100%;
-		height: 100%;
-		clip-path: circle(150px at calc(100% - 150px) 100px);
+		width: 300px;
+		height: 300px;
+		border-radius: 50%;
+		background: v-bind(typesGradient);
 		transition: 0.5s ease-in-out;
 	}
-	
-	&.type-bug:before { background: var(--color-type-bug-diff); }
-	&.type-dark:before { background: var(--color-type-dark-diff); }
-	&.type-dragon:before { background: var(--color-type-dragon-diff); }
-	&.type-electric:before { background: var(--color-type-electric-diff); }
-	&.type-fire:before { background: var(--color-type-fire-diff); }
-	&.type-fairy:before { background: var(--color-type-fairy-diff); }
-	&.type-fighting:before { background: var(--color-type-fighting-diff); }
-	&.type-flying:before { background: var(--color-type-flying-diff); }
-	&.type-ghost:before { background: var(--color-type-ghost-diff); }
-	&.type-grass:before { background: var(--color-type-grass-diff); }
-	&.type-ground:before { background: var(--color-type-ground-diff); }
-	&.type-ice:before { background: var(--color-type-ice-diff); }
-	&.type-normal:before { background: var(--color-type-normal-diff); }
-	&.type-poison:before { background: var(--color-type-poison-diff); }
-	&.type-psychic:before { background: var(--color-type-psychic-diff); }
-	&.type-rock:before { background: var(--color-type-rock-diff); }
-	&.type-steel:before { background: var(--color-type-steel-diff); }
-	&.type-water:before { background: var(--color-type-water-diff); }
 	
 	&:after {
 		content: attr(data-number);
