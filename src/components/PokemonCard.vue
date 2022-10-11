@@ -4,9 +4,8 @@ import { capitalize } from "@/utils/strings";
 import IconType from "@/components/icons/IconType.vue";
 import PokemonImage from "@/components/PokemonImage.vue";
 
-defineProps<{
+const props = defineProps<{
 	pokemon?: Pokemon,
-	isLoading?: boolean,
 }>();
 </script>
 

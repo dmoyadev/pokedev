@@ -21,6 +21,7 @@ const page = ref(queryPage);
 const limit = ref(50);
 const offset = ref(page.value * limit.value);
 const totalPages = computed(() => Math.ceil(pokemonNamesFiltered.value.length / limit.value));
+const isLoading = ref(false);
 
 // List generation
 const pokemonList = ref<Pokemon[]>([]);
@@ -151,13 +152,26 @@ getPokemonNames();
 			:total-pages="totalPages"
 			@change-page="debouncedFetchPokemonList($event)"
 		/>
+		
 		<div class="pokemon-list">
-			<PokemonCard
-				v-for="(pokemon, index) in pokemonList"
-				:key="index"
-				:pokemon="pokemon"
-			/>
+			<!-- Normal state -->
+			<template v-if="!isLoading && pokemonList.length">
+				<PokemonCard
+					v-for="(pokemon, index) in pokemonList"
+					:key="index"
+					:pokemon="pokemon"
+				/>
+			</template>
+			
+			<!-- Loading state -->
+			<template v-else>
+				<PokemonCard
+					v-for="index in limit"
+					:key="index"
+				/>
+			</template>
 		</div>
+		
 		<Navigation
 			class="navigation"
 			:page="page"
