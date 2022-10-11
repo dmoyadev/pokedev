@@ -216,11 +216,17 @@ getTrade();
 			<div class="img-wrapper">
 				<img
 					class="icon"
-					:src="'/icons/' + evolutionTrigger.time_of_day + (evolutionTrigger.time_of_day === 'day' ? '.svg' : '.png')"
+					:src="'/icons/' + evolutionTrigger.time_of_day + '.png'"
 					alt=""
 				>
 			</div>
-			<p>{{ evolutionTrigger.time_of_day === 'day' ? 'Durante el día' : 'Por la noche' }}</p>
+			<p>
+				{{ evolutionTrigger.time_of_day === 'day'
+					? 'Durante el día'
+					: (evolutionTrigger.time_of_day === 'night'
+						? 'Por la noche'
+						: 'Al atardecer') }}
+			</p>
 		</div>
 		
 		<!-- Happiness evolution -->

@@ -57,7 +57,7 @@ export interface EvolutionDetail {
 	 * */
 	relative_physical_stats: 1 | 0 | -1;
 	/** The required time of day. Day or night. */
-	time_of_day: "day" | "night" | "";
+	time_of_day: "day" | "night" | "dusk" | "";
 	/** Pokémon species for which this one must be traded. */
 	trade_species: NamedAPIResource;
 	/** Whether the 3DS needs to be turned upside-down as this Pokémon levels up. */
