@@ -11,11 +11,14 @@ if [ -z "$message" ]; then
 	message="$default"
 fi
 
-# build
+# Build the project
 npm run build
 
-# navigate into the build output directory
+# Navigate into the build output directory
 cd dist
+
+# Allow to work with history mode in Vue Router
+cp index.html 404.html
 
 echo 'pokedev.danimoya.es' > CNAME
 
@@ -23,7 +26,7 @@ git init
 git add -A
 git commit -m "$message"
 
-# if you are deploying to https://<USERNAME>.github.io
+# Actual deployment in GitHub Pages
 git push -f git@github.com:dmoyadev/pokedev.git main:gh-pages
 
 cd -

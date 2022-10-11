@@ -4,15 +4,12 @@
 	"version": "1.0.0beta",
 	"author": "Daniel Moya danielmoyaleiva@gmail.com https://danimoya.es",
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite --port 5174",
 		"build": "run-p type-check build-only",
-		"deploy": "./deploy.sh",
-		"preview": "vite preview --port 4173",
-		"test:unit": "vitest --environment jsdom",
-		"test:e2e": "start-server-and-test preview http://localhost:4173/ 'cypress open --e2e'",
-		"test:e2e:ci": "start-server-and-test preview http://localhost:4173/ 'cypress run --e2e'",
 		"build-only": "vite build",
 		"type-check": "vue-tsc --noEmit -p tsconfig.json --composite false",
+		"preview": "vite preview --port 4173",
+		"deploy": "./deploy.sh",
 		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
 	},
 	"dependencies": {
