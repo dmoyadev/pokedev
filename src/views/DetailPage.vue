@@ -4,7 +4,6 @@ import { computed, ref } from "vue";
 import { useFetchPokemon } from "@/composables/fetchPokemon";
 import { PokemonSpeciesVariety, PokemonWithSpecie } from "@/models/Pokemon";
 import { capitalize, translate, translateGenus } from "@/utils/strings";
-import { flattenObject } from "@/utils/object";
 import PokemonImage from "@/components/PokemonImage.vue";
 import IconArrowLeft from "@/components/icons/IconArrowLeft.vue";
 import PokemonStats from "@/components/PokemonStats.vue";
@@ -14,6 +13,7 @@ import { APIResource } from "@/models/Common";
 import { useFetchData } from "@/composables/fetchData";
 import PokemonEvolutionChain from "@/components/PokemonEvolutionChain.vue";
 import { EvolutionChain } from "@/models/Evolution";
+import PokemonSprites from "@/components/PokemonSprites.vue";
 
 // Get Pokémon data
 const route = useRoute();
@@ -52,8 +52,6 @@ function getEvolutionChain(evolution: APIResource) {
 			evolutionChain.value = data.value;
 		});
 }
-
-const pokemonSprites = computed(() => flattenObject(pokemon.value?.sprites || {}));
 
 // Init
 loadPokemonDetails();
@@ -170,36 +168,31 @@ const typesGradient = computed(() => {
 					:key="index"
 					:to="variety.name"
 				>
-					<PokemonImage
-						class="image"
-						:pokemon="variety"
-						:image-name="variety.name"
-					/>
+					<div class="img-wrapper">
+						<PokemonImage
+							class="image"
+							:pokemon="variety"
+							:image-name="variety.name"
+						/>
+					</div>
+					<h4>{{ capitalize(variety.name).replaceAll('-', ' ').replaceAll('Gmax', 'GigaMax') }}</h4>
 				</RouterLink>
 			</div>
 		</section>
 		
 		<section
-			v-if="Object.values(pokemonSprites).length"
+			v-if="pokemon?.sprites"
 			class="pokemon-sprites"
 		>
 			<h3 class="title">
 				Sprites:
 			</h3>
 			
-			<div class="content">
-				<div
-					v-for="(sprite, index) in pokemonSprites"
-					:key="index"
-					class="img-wrapper"
-				>
-					<img
-						class="image"
-						:src="sprite"
-						:alt="'Sprite de ' + pokemon?.name"
-					>
-				</div>
-			</div>
+			<PokemonSprites
+				:pokemon-type="pokemon?.types[0].type.name"
+				:pokemon-sprites="pokemon?.sprites"
+				:generations="generations"
+			/>
 		</section>
 	</main>
 </template>
@@ -355,7 +348,6 @@ section {
 	flex-wrap: wrap;
 	gap: 5px;
 	align-items: center;
-	justify-content: space-between;
 	
 	.img-wrapper {
 		width: 100px;
@@ -368,6 +360,42 @@ section {
 			max-height: 100%;
 			max-width: 100%;
 		}
+	}
+}
+
+.pokemon-varieties {
+	.content {
+		gap: 20px;
+	}
+	
+	.img-wrapper {
+		width: 200px;
+		height: 200px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
+		.image {
+			max-height: 100%;
+			max-width: 100%;
+		}
+	}
+	
+	span {
+		position: absolute;
+		bottom: 7px;
+		left: 30%;
+		transform: translateX(-50%);
+		font-family: 'Kaushan Script', cursive;
+		color: var(--color-text-alpha);
+		z-index: 0;
+		font-weight: bold;
+	}
+	
+	h4 {
+		margin-top: 10px;
+		z-index: 1;
+		text-align: center;
 	}
 }
 </style>
